@@ -13,7 +13,7 @@ public class DfsSolver extends AbstractSolver {
 	
 	public void start(){
 		long startTime = System.nanoTime();
-		Node currentNode = new Node(Direction.NONE, null, startState, startingPosition);
+		Node currentNode = new Node(Direction.NONE, null, startState, startingPosition, this);
 		boolean solved = false;
 		open.push(currentNode);
 		while(!open.isEmpty() && !solved){
@@ -44,17 +44,17 @@ public class DfsSolver extends AbstractSolver {
 	}
 	
 	protected ArrayList<Node> addTo(ArrayList<Node> children, Direction[] directions, Node currentNode) {
-		System.out.print("Added");
+		//System.out.print("Added");
 		for(Direction currentDirection : directions){
 			if(currentDirection != null){
-				System.out.print(" " + currentDirection);
-				Node tempNode = new Node(currentDirection, currentNode, startState, startingPosition);
+				//System.out.print(" " + currentDirection);
+				Node tempNode = new Node(currentDirection, currentNode, startState, this);
 				if(!closedContains(tempNode)){
 					children.add(tempNode);
 				}
 			}
 		}
-		System.out.println(" To The Stack");
+		//System.out.println(" To The Stack");
 		return children;
 	}
 }

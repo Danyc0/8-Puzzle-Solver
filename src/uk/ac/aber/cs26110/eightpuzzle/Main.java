@@ -3,10 +3,10 @@ package uk.ac.aber.cs26110.eightpuzzle;
 public class Main {
 
 	public static void main(String[] args){//String startPath, String goalPath, String mode) {
-		String mode = "bfs";
+		String mode = "dfs";
 		Importer importer = new Importer();
-		int[][] start = importer.importPuzzle("/home/daniel/Documents/CS261/datafiles/testStart3.txt");//startPath);
-		int[][] goal = importer.importPuzzle("/home/daniel/Documents/CS261/datafiles/testGoal3.txt");//goalPath);
+		int[][] start = importer.importPuzzle("/home/daniel/Documents/CS261/datafiles/testStart2.txt");//startPath);
+		int[][] goal = importer.importPuzzle("/home/daniel/Documents/CS261/datafiles/testGoal2.txt");//goalPath);
 		AbstractSolver solver = null;
 		switch(mode){
 		case "bfs" : solver = new BfsSolver(start, goal);

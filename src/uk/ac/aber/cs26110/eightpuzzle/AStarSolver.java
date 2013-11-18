@@ -18,7 +18,7 @@ public class AStarSolver extends AbstractSolver {
 	
 	public void start(){
 		long startTime = System.nanoTime();
-		Node currentNode = new Node(Direction.NONE, null, startingPosition, startState, startingPosition, goalState, whichHeuristic);
+		Node currentNode = new Node(Direction.NONE, null, startingPosition, startState, goalState, whichHeuristic, this);
 		boolean solved = false;
 		currentNode.updateHeuristicValue(findSolution(currentNode, true));
 		open.push(currentNode);
@@ -36,9 +36,11 @@ public class AStarSolver extends AbstractSolver {
 			addChildren(getChildren(currentNode));
 		}
 		long endTime = System.nanoTime();
-		int totalTime = (int)(endTime - startTime);
+		long totalTime = (endTime - startTime);
 		System.out.println(nodesEvaluated + " nodes were evaluated");
-		if(solved)System.out.println("There are " + currentNode.getPathCost() + " Nodes in the solution");
+		if(solved){
+			System.out.println("There are " + currentNode.getPathCost() + " Nodes in the solution");
+		}
 		else{System.out.println("No Solution Was Found");}
 		System.out.println("Time Taken: " + (totalTime/Math.pow(10,9)) + "Seconds");
 	}
@@ -51,16 +53,16 @@ public class AStarSolver extends AbstractSolver {
 	}
 	
 	protected ArrayList<Node> addTo(ArrayList<Node> children, Direction[] directions, Node currentNode) {
-		System.out.print("Added");
+		//System.out.print("Added");
 		for(Direction currentDirection : directions){
 			if(currentDirection != null){
-				System.out.print(" " + currentDirection);
+				//System.out.print(" " + currentDirection);
 				//TODO OUTPUT findSolution(currentNode, true)
-				Node tempNode = new Node(currentDirection, currentNode, findSolution(currentNode, true), startingPosition, goalState, whichHeuristic);
+				Node tempNode = new Node(currentDirection, currentNode, findSolution(currentNode, true), goalState, whichHeuristic, this);
 				children.add(tempNode);
 			}
 		}
-		System.out.println(" To The Priority Queue");
+		//System.out.println(" To The Priority Queue");
 		return children;
 	}
 }

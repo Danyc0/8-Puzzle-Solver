@@ -117,7 +117,7 @@ public abstract class AbstractSolver {
 	public boolean isSolution(Node currentNode){
 		int[][] currentState = findSolution(currentNode, true);
 		//Check if it has reached goal state
-		return compare(currentState, goalState);
+		return compare(currentState, goalState, true);
 	}
 
 	protected int[][] findSolution(Node startNode, boolean dontOutput) {
@@ -169,7 +169,9 @@ public abstract class AbstractSolver {
 				currentY++;
 			}
 			break;
-			default: if(!dontOutput) System.out.println("Root");
+			default: if(!dontOutput){
+				System.out.println("Root");
+			}
 			break;
 			}
 		}
@@ -211,16 +213,19 @@ public abstract class AbstractSolver {
 		}
 	}
 
-	private boolean compare(int[][] currentState, int[][] goalState) {
+	private boolean compare(int[][] currentState, int[][] goalState, boolean dontOutput) {
+		if(!dontOutput){
+			outputState(currentState);
+		}
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
 				if(currentState[i][j] != goalState[i][j]){
-					//System.out.println("Not A Solution");
+					System.out.println("Not A Solution");
 					return false;
 				}
 			}
 		}
-		//System.out.println("Solution");
+		System.out.println("Solution Found");
 		outputState(currentState);
 		return true;
 	}
