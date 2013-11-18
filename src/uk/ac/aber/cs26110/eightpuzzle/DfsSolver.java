@@ -13,7 +13,7 @@ public class DfsSolver extends AbstractSolver {
 	
 	public void start(){
 		long startTime = System.nanoTime();
-		Node currentNode = new Node(Direction.NONE, null, startingPosition);
+		Node currentNode = new Node(Direction.NONE, null, startState, startingPosition);
 		boolean solved = false;
 		open.push(currentNode);
 		while(!open.isEmpty() && !solved){
@@ -28,8 +28,12 @@ public class DfsSolver extends AbstractSolver {
 		long endTime = System.nanoTime();
 		int totalTime = (int)(endTime - startTime);
 		System.out.println(nodesEvaluated + " nodes were evaluated");
-		if(solved)System.out.println("There are " + currentNode.getPathCost() + " Nodes in the solution");
-		else{System.out.println("No Solution Was Found");}
+		if(solved){
+			System.out.println("There are " + currentNode.getPathCost() + " Nodes in the solution");
+		}
+		else{
+			System.out.println("No Solution Was Found");
+		}
 		System.out.println("Time Taken: " + (totalTime/Math.pow(10,9)) + "Seconds");
 	}
 	
@@ -44,7 +48,7 @@ public class DfsSolver extends AbstractSolver {
 		for(Direction currentDirection : directions){
 			if(currentDirection != null){
 				System.out.print(" " + currentDirection);
-				Node tempNode = new Node(currentDirection, currentNode);
+				Node tempNode = new Node(currentDirection, currentNode, startState, startingPosition);
 				if(!closedContains(tempNode)){
 					children.add(tempNode);
 				}

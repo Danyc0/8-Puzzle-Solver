@@ -115,68 +115,74 @@ public abstract class AbstractSolver {
 	}
 
 	public boolean isSolution(Node currentNode){
-		int[][] currentState = findSolution(currentNode, false);
+		int[][] currentState = findSolution(currentNode, true);
 		//Check if it has reached goal state
 		return compare(currentState, goalState);
 	}
 
 	protected int[][] findSolution(Node startNode, boolean dontOutput) {
-	////Populate instruction stack
-			Stack<Node> stack = new Stack<Node>();
-			Node currentNode = startNode;
+		int nodesInSolution;
+		////Populate instruction stack
+		Stack<Node> stack = new Stack<Node>();
+		Node currentNode = startNode;
+		stack.push(currentNode);
+		while(currentNode.getParent() != null){
+			currentNode = currentNode.getParent();
 			stack.push(currentNode);
-			while(currentNode.getParent() != null){
-				currentNode = currentNode.getParent();
-				stack.push(currentNode);
+		}
+		////Apply instructions
+		int[][] currentState = deepCopy(startState);
+		int currentX = (int) startingPosition.getX();
+		int currentY = (int) startingPosition.getY();
+		if(!dontOutput){
+			System.out.println("New Stack of Size: " + stack.size());
+		}
+		nodesInSolution = stack.size();
+		startNode.setPathCost(nodesInSolution);
+		if(!dontOutput){
+			outputStack(stack);
+		}
+		while(!stack.isEmpty()){
+			Node tempNode = stack.pop();
+			Direction direction = tempNode.getDirection();
+			if(!dontOutput){
+				System.out.println("Moving Blank " + direction);
 			}
-			////Apply instructions
-			int[][] currentState = deepCopy(startState);
-			int currentX = (int) startingPosition.getX();
-		    int currentY = (int) startingPosition.getY();
-		    if(!dontOutput) System.out.println("New Stack of Size: " + stack.size());
-		    nodesInSolution = stack.size();
-		    startNode.setPathCost(nodesInSolution);
-		    if(!dontOutput) outputStack(stack);
-			while(!stack.isEmpty()){
-				Node tempNode = stack.pop();
-				Direction direction = tempNode.getDirection();
-				if(!dontOutput) System.out.println("Moving Blank " + direction);
-				switch(direction){
-				case UP : {
-					int temp = currentState[currentX][currentY];
-					currentState[currentX][currentY] = currentState[currentX - 1][currentY];
-					currentState[currentX - 1][currentY] = temp;
-					//currentState = moveBlank(currentX, currentY, -1, 0);
-					currentX--;
-				}
-				break;
-				case DOWN : {
-					int temp = currentState[currentX][currentY];
-					currentState[currentX][currentY] = currentState[currentX + 1][currentY];
-					currentState[currentX + 1][currentY] = temp;
-					currentX++;
-				}
-				break;
-				case LEFT : {
-					int temp = currentState[currentX][currentY];
-					currentState[currentX][currentY] = currentState[currentX][currentY - 1];
-					currentState[currentX][currentY - 1] = temp;
-					currentY--;
-				}
-				break;
-				case RIGHT : {
-					int temp = currentState[currentX][currentY];
-					currentState[currentX][currentY] = currentState[currentX][currentY + 1];
-					currentState[currentX][currentY + 1] = temp;
-					currentY++;
-				}
-				break;
-				default: if(!dontOutput) System.out.println("Root");
-				break;
-				}
+			switch(direction){
+			case UP : {
+				moveBlank(currentX, currentY, -1, 0, currentState);
+				currentX--;
 			}
-			if(!dontOutput) outputState(currentState);
-			return currentState;
+			break;
+			case DOWN : {
+				moveBlank(currentX, currentY, +1, 0, currentState);
+				currentX++;
+			}
+			break;
+			case LEFT : {
+				moveBlank(currentX, currentY, 0, -1, currentState);
+				currentY--;
+			}
+			break;
+			case RIGHT : {
+				moveBlank(currentX, currentY, 0, +1, currentState);
+				currentY++;
+			}
+			break;
+			default: if(!dontOutput) System.out.println("Root");
+			break;
+			}
+		}
+		if(!dontOutput){
+			outputState(currentState);
+		}
+		return currentState;
+	}
+	
+	public void moveBlank(int currentX, int currentY, int xCalc, int yCalc, int[][] currentState){
+		int temp = currentState[currentX][currentY];
+		currentState[currentX][currentY] = currentState[currentX + xCalc][currentY + yCalc];
+		currentState[currentX + xCalc][currentY + yCalc] = temp;
 	}
 
 	private void outputStack(Stack<Node> stack) {
@@ -209,12 +215,12 @@ public abstract class AbstractSolver {
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
 				if(currentState[i][j] != goalState[i][j]){
-					System.out.println("Not A Solution");
+					//System.out.println("Not A Solution");
 					return false;
 				}
 			}
 		}
-		System.out.println("Solution");
+		//System.out.println("Solution");
 		outputState(currentState);
 		return true;
 	}

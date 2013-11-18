@@ -18,7 +18,7 @@ public class AStarSolver extends AbstractSolver {
 	
 	public void start(){
 		long startTime = System.nanoTime();
-		Node currentNode = new Node(Direction.NONE, null, startingPosition, startState, goalState, whichHeuristic);
+		Node currentNode = new Node(Direction.NONE, null, startingPosition, startState, startingPosition, goalState, whichHeuristic);
 		boolean solved = false;
 		currentNode.updateHeuristicValue(findSolution(currentNode, true));
 		open.push(currentNode);
@@ -56,7 +56,7 @@ public class AStarSolver extends AbstractSolver {
 			if(currentDirection != null){
 				System.out.print(" " + currentDirection);
 				//TODO OUTPUT findSolution(currentNode, true)
-				Node tempNode = new Node(currentDirection, currentNode, findSolution(currentNode, true), goalState, whichHeuristic);
+				Node tempNode = new Node(currentDirection, currentNode, findSolution(currentNode, true), startingPosition, goalState, whichHeuristic);
 				children.add(tempNode);
 			}
 		}

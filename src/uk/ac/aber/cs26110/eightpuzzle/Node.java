@@ -12,8 +12,10 @@ public class Node{
 	private Point position;
 	private int whichHeuristic;
 	private int[][] goalState;
+	private int[][] startState;
+	private Point start0Point;
 
-	public Node(Direction direction, Node parent) {
+	public Node(Direction direction, Node parent, int[][] startState, Point start0Point) {
 		this.direction = direction;
 		this.parent = parent;
 		if(parent == null){
@@ -23,24 +25,26 @@ public class Node{
 			this.depth = parent.getDepth() + 1;
 			this.position = findPosition();
 		}
+		this.startState = startState;
+		this.start0Point = start0Point;
 	}
-	
-	public Node(Direction direction, Node parent, Point position) {
-		this(direction, parent);
+
+	public Node(Point position, Direction direction, Node parent, int[][] startState, Point start0Point) {
+		this(direction, parent, startState, start0Point);
 		this.position = position;
 	}
-	
-	public Node(Direction direction, Node parent, int[][] currentState, int[][] goalState, int whichHeuristic){
-		this(direction, parent);
+
+	public Node(Direction direction, Node parent, int[][] startState, Point start0Point, int[][] goalState, int whichHeuristic){
+		this(direction, parent, startState, start0Point);
 		this.whichHeuristic = whichHeuristic;
 		this.goalState = goalState;
 	}
 
-	public Node(Direction direction, Node parent, Point position, int[][] currentState, int[][] goalState, int whichHeuristic) {
-		this(direction, parent, currentState, goalState, whichHeuristic);
+	public Node(Direction direction, Node parent, Point position, int[][] startState, Point start0Point, int[][] goalState, int whichHeuristic) {
+		this(direction, parent, startState, start0Point, goalState, whichHeuristic);
 		this.position = position;
 	}
-	
+
 	int calculateFirstHeuristic(int[][] currentState) {
 		//Number of tiles out of place
 		int tilesOutOfPlace = 0;
@@ -53,7 +57,7 @@ public class Node{
 		}
 		return tilesOutOfPlace;
 	}
-	
+
 	int calculateSecondHeuristic(int[][] currentState) {
 		// TODO Manhattan Distance
 		int manhattanDistance = 0;
@@ -79,11 +83,123 @@ public class Node{
 
 	public boolean equals(Node otherNode){ 	//PUT IN ABOUT WHERE THE PARENTS ARE DOING THE SAME THING
 											//MAYBE JUST EVAUATE BOTH AND CHECK IF THE RESULTS ARE THE SAME
-		
-		if(this.direction == otherNode.direction && this.position.getX() == otherNode.position.getX() && this.position.getY() == otherNode.position.getY()){
+		/*if(this.direction == otherNode.direction && 
+				this.position.getX() == otherNode.position.getX() && 
+				this.position.getY() == otherNode.position.getY()){
 			return true;
 		}
-		return false;
+		return false;*/
+		int[][] thisSolution = this.findSolution(false);
+		int[][] otherSolution = otherNode.findSolution(false);
+		return compare(thisSolution, otherSolution);
+	}
+
+	private boolean compare(int[][] currentState, int[][] goalState) {
+		for(int i = 0; i < 3; i++){
+			for(int j = 0; j < 3; j++){
+				if(currentState[i][j] != goalState[i][j]){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	protected int[][] findSolution(boolean dontOutput) {
+		int nodesInSolution;
+		////Populate instruction stack
+		Stack<Node> stack = new Stack<Node>();
+		Node currentNode = this;
+		stack.push(currentNode);
+		while(currentNode.getParent() != null){
+			currentNode = currentNode.getParent();
+			stack.push(currentNode);
+		}
+		////Apply instructions
+		int[][] currentState = deepCopy(startState);
+		int currentX = (int) position.getX(); //WRONG
+		int currentY = (int) position.getY(); //WRONG
+		if(!dontOutput) System.out.println("New Stack of Size: " + stack.size());
+		nodesInSolution = stack.size();
+		this.setPathCost(nodesInSolution);
+		//if(!dontOutput){
+			outputStack(stack);
+		//}
+		while(!stack.isEmpty()){
+			Node tempNode = stack.pop();
+			Direction direction = tempNode.getDirection();
+			if(!dontOutput) System.out.println("Moving Blank " + direction);
+			switch(direction){
+			case UP : {
+				currentState = moveBlank(currentX, currentY, -1, 0, currentState);
+				currentX--;
+			}
+			break;
+			case DOWN : {
+				currentState = moveBlank(currentX, currentY, +1, 0, currentState);
+				currentX++;
+			}
+			break;
+			case LEFT : {
+				outputState(currentState);
+				System.out.println("MOVING");
+				currentState = moveBlank(currentX, currentY, 0, -1, currentState);
+				System.out.println("MOVED");
+				outputState(currentState);
+				currentY--;
+			}
+			break;
+			case RIGHT : {
+				currentState = moveBlank(currentX, currentY, 0, +1, currentState);
+				currentY++;
+			}
+			break;
+			default: if(!dontOutput) System.out.println("Root");
+			break;
+			}
+			System.out.println("TEST1");
+		}
+		System.out.println("TEST2");
+		if(!dontOutput) outputState(currentState);
+		return currentState;
+	}
+	
+	public int[][] moveBlank(int currentX, int currentY, int xCalc, int yCalc, int[][] currentState){
+		int temp = currentState[currentX][currentY];
+		currentState[currentX]
+				[currentY] = currentState
+				[currentX + xCalc]
+						[currentY + yCalc];
+		currentState[currentX + xCalc][currentY + yCalc] = temp;
+		return currentState;
+	}
+	
+	protected void outputState(int[][] startState2){
+		for(int[] nodes : startState2){
+			for(int node : nodes){
+				System.out.print(node);
+			}
+			System.out.println();
+		}
+	}
+
+	private void outputStack(Stack<Node> stack) {
+		Stack<Node> newStack = (Stack<Node>) stack.clone();
+		while(!newStack.isEmpty()){
+			System.out.println(newStack.pop().getDirection());
+		}
+	}
+
+	private int[][] deepCopy(int[][] toBeCopied) {
+		int[][] copy = new
+				int[toBeCopied.length]
+				[toBeCopied[0].length];
+		for(int i = 0; i < copy.length; i++){
+			for(int j = 0; j < copy[i].length; j++){
+				copy[i][j] = toBeCopied[i][j];
+			}
+		}
+		return copy;
 	}
 
 	private Point findPosition() {
@@ -109,11 +225,11 @@ public class Node{
 	public Point getPosition(){
 		return this.position;
 	}
-	
+
 	public Node getParent(){
 		return this.parent;
 	}
-	
+
 	public Direction getDirection(){
 		return direction;
 	}
