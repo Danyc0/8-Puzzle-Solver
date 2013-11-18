@@ -26,7 +26,7 @@ public class DfsSolver extends AbstractSolver {
 			addChildren(getChildren(currentNode));
 		}
 		long endTime = System.nanoTime();
-		int totalTime = (int)(endTime - startTime);
+		long totalTime = endTime - startTime;
 		System.out.println(nodesEvaluated + " nodes were evaluated");
 		if(solved){
 			System.out.println("There are " + currentNode.getPathCost() + " Nodes in the solution");
@@ -34,7 +34,7 @@ public class DfsSolver extends AbstractSolver {
 		else{
 			System.out.println("No Solution Was Found");
 		}
-		System.out.println("Time Taken: " + (totalTime/Math.pow(10,9)) + "Seconds");
+		System.out.println("Time Taken: " + (totalTime/Math.pow(10,9)) + " Seconds");
 	}
 	
 	protected void addChildren(ArrayList<Node> arrayList){

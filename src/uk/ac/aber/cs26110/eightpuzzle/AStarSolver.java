@@ -18,9 +18,9 @@ public class AStarSolver extends AbstractSolver {
 	
 	public void start(){
 		long startTime = System.nanoTime();
-		Node currentNode = new Node(Direction.NONE, null, startingPosition, startState, goalState, whichHeuristic, this);
+		Node currentNode = new Node(Direction.NONE, null, startingPosition, startState, goalState, this);
 		boolean solved = false;
-		currentNode.updateHeuristicValue(findSolution(currentNode, true));
+		currentNode.updateHeuristicValue(findSolution(currentNode, true), whichHeuristic);
 		open.push(currentNode);
 		while(!open.isEmpty() && !solved){
 			currentNode = open.pop();
@@ -28,7 +28,6 @@ public class AStarSolver extends AbstractSolver {
 			System.out.println("Node Output:");
 			outputState(findSolution(currentNode, true));
 			//TODO OUTPUT findSolution(currentNode, true)
-			System.out.println("The Costs Of This Node Are: H-" + currentNode.getHeuristicValue() + " P-" + currentNode.getPathCost() + " F-" + currentNode.getFunctionCost());
 			if(isSolution(currentNode)){
 				solved = true;
 			}
@@ -36,18 +35,18 @@ public class AStarSolver extends AbstractSolver {
 			addChildren(getChildren(currentNode));
 		}
 		long endTime = System.nanoTime();
-		long totalTime = (endTime - startTime);
+		long totalTime = endTime - startTime;
 		System.out.println(nodesEvaluated + " nodes were evaluated");
 		if(solved){
 			System.out.println("There are " + currentNode.getPathCost() + " Nodes in the solution");
 		}
 		else{System.out.println("No Solution Was Found");}
-		System.out.println("Time Taken: " + (totalTime/Math.pow(10,9)) + "Seconds");
+		System.out.println("Time Taken: " + (totalTime/Math.pow(10,9)) + " Seconds");
 	}
 	
 	protected void addChildren(ArrayList<Node> arrayList){
 		for(Node currentChild : arrayList){
-			currentChild.updateHeuristicValue(findSolution(currentChild, true));
+			currentChild.updateHeuristicValue(findSolution(currentChild, true), whichHeuristic);
 			open.push(currentChild);
 		}
 	}
@@ -58,7 +57,7 @@ public class AStarSolver extends AbstractSolver {
 			if(currentDirection != null){
 				//System.out.print(" " + currentDirection);
 				//TODO OUTPUT findSolution(currentNode, true)
-				Node tempNode = new Node(currentDirection, currentNode, findSolution(currentNode, true), goalState, whichHeuristic, this);
+				Node tempNode = new Node(currentDirection, currentNode, findSolution(currentNode, true), goalState, this);
 				children.add(tempNode);
 			}
 		}

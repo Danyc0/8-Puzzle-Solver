@@ -7,22 +7,13 @@ public class Node{
 	private int pathCost;
 	private Node parent;
 	private int heuristicValue;
-	private int depth;
 	private Point position;
-	private int whichHeuristic;
-	private int[][] goalState;
 	private AbstractSolver solver;
 
 	public Node(Direction direction, Node parent, int[][] startState, AbstractSolver solver) {
 		this.direction = direction;
 		this.parent = parent;
-		if(parent == null){
-			this.depth = 0;
-		}
-		else{
-			this.depth = parent.getDepth() + 1;
-			this.position = findPosition();
-		}
+		this.position = findPosition();
 		this.solver = solver;
 	}
 
@@ -31,19 +22,18 @@ public class Node{
 		this.position = position;
 	}
 
-	public Node(Direction direction, Node parent, int[][] startState, int[][] goalState, int whichHeuristic, AbstractSolver solver){
+	public Node(Direction direction, Node parent, int[][] startState, int[][] goalState, AbstractSolver solver){
 		this(direction, parent, startState, solver);
-		this.whichHeuristic = whichHeuristic;
-		this.goalState = goalState;
 	}
 
-	public Node(Direction direction, Node parent, Point position, int[][] startState, int[][] goalState, int whichHeuristic, AbstractSolver solver) {
-		this(direction, parent, startState, goalState, whichHeuristic, solver);
+	public Node(Direction direction, Node parent, Point position, int[][] startState, int[][] goalState, AbstractSolver solver) {
+		this(direction, parent, startState, goalState, solver);
 		this.position = position;
 	}
 
 	int calculateFirstHeuristic(int[][] currentState) {
 		//Number of tiles out of place
+		int[][] goalState = solver.getGoalState();
 		int tilesOutOfPlace = 0;
 		for(int i = 0; i < goalState.length; i++){
 			for(int j = 0; j < goalState[0].length; j++){
@@ -60,14 +50,15 @@ public class Node{
 		int manhattanDistance = 0;
 		for(int i = 0; i < currentState.length; i++){
 			for(int j = 0; j < currentState[0].length; j++){
-				Point goalLocation = find(currentState[i][j], goalState);
+				Point goalLocation = find(currentState[i][j]);
 				manhattanDistance =  manhattanDistance + Math.abs((i + j) - ((int)(goalLocation.getX() + goalLocation.getY())));
 			}
 		}
 		return manhattanDistance;
 	}
 
-	private Point find(int value, int[][] goalState) {
+	private Point find(int value) {
+		int [][] goalState = solver.getGoalState();
 		for(int i = 0; i < goalState.length; i++){
 			for(int j = 0; j < goalState[0].length; j++){
 				if(goalState[i][j] == value){
@@ -127,16 +118,8 @@ public class Node{
 		return direction;
 	}
 
-	public int getDepth(){
-		return this.depth;
-	}
-
 	public int getFunctionCost() {
 		return (heuristicValue + pathCost);
-	}
-
-	public int getHeuristicValue() {
-		return heuristicValue;
 	}
 
 	public int getPathCost() {
@@ -147,7 +130,7 @@ public class Node{
 		this.pathCost = newPathCost;
 	}
 
-	public void updateHeuristicValue(int[][] currentState) {
+	public void updateHeuristicValue(int[][] currentState, int whichHeuristic) {
 		if(whichHeuristic == 1){
 			heuristicValue = calculateFirstHeuristic(currentState);
 		}

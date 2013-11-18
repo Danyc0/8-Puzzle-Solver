@@ -213,6 +213,7 @@ public abstract class AbstractSolver {
 		}
 	}
 
+	private int fails = 1;
 	private boolean compare(int[][] currentState, int[][] goalState, boolean dontOutput) {
 		if(!dontOutput){
 			outputState(currentState);
@@ -220,7 +221,8 @@ public abstract class AbstractSolver {
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
 				if(currentState[i][j] != goalState[i][j]){
-					System.out.println("Not A Solution");
+					System.out.println("Not A Solution. " + fails + " fails");
+					fails++;
 					return false;
 				}
 			}
@@ -228,5 +230,9 @@ public abstract class AbstractSolver {
 		System.out.println("Solution Found");
 		outputState(currentState);
 		return true;
+	}
+	
+	public int[][] getGoalState(){
+		return goalState;
 	}
 }
