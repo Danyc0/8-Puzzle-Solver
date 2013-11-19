@@ -22,19 +22,11 @@ public class DfsSolver extends AbstractSolver {
 			if(isSolution(currentNode)){
 				solved = true;
 			}
-			closed.add(currentNode);
+			closed.add(findSolution(currentNode, true));
 			addChildren(getChildren(currentNode));
 		}
 		long endTime = System.nanoTime();
-		long totalTime = endTime - startTime;
-		System.out.println(nodesEvaluated + " nodes were evaluated");
-		if(solved){
-			System.out.println("There are " + currentNode.getPathCost() + " Nodes in the solution");
-		}
-		else{
-			System.out.println("No Solution Was Found");
-		}
-		System.out.println("Time Taken: " + (totalTime/Math.pow(10,9)) + " Seconds");
+		review(startTime, endTime, solved, currentNode);
 	}
 	
 	protected void addChildren(ArrayList<Node> arrayList){

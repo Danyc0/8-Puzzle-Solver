@@ -27,21 +27,14 @@ public class AStarSolver extends AbstractSolver {
 			nodesEvaluated++;
 			System.out.println("Node Output:");
 			outputState(findSolution(currentNode, true));
-			//TODO OUTPUT findSolution(currentNode, true)
 			if(isSolution(currentNode)){
 				solved = true;
 			}
-			closed.add(currentNode);
 			addChildren(getChildren(currentNode));
 		}
+
 		long endTime = System.nanoTime();
-		long totalTime = endTime - startTime;
-		System.out.println(nodesEvaluated + " nodes were evaluated");
-		if(solved){
-			System.out.println("There are " + currentNode.getPathCost() + " Nodes in the solution");
-		}
-		else{System.out.println("No Solution Was Found");}
-		System.out.println("Time Taken: " + (totalTime/Math.pow(10,9)) + " Seconds");
+		review(startTime, endTime, solved, currentNode);
 	}
 	
 	protected void addChildren(ArrayList<Node> arrayList){

@@ -9,7 +9,7 @@ public abstract class AbstractSolver {
 	int[][] startState;
 	Point startingPosition;
 	int[][] goalState;
-	ArrayList<Node> closed;
+	ArrayList<int[][]> closed;
 	int nodesEvaluated = 0;
 	int nodesInSolution = 0;
 	
@@ -17,7 +17,7 @@ public abstract class AbstractSolver {
 		this.startState = start;
 		startingPosition = getStartingPosition();
 		this.goalState = goal;
-		closed = new ArrayList<Node>();
+		closed = new ArrayList<int[][]>();
 		outputState(startState);
 		outputState(goalState);
 	}
@@ -102,12 +102,24 @@ public abstract class AbstractSolver {
 	abstract ArrayList<Node> addTo(ArrayList<Node> children, Direction[] directions, Node currentNode);
 
 	protected boolean closedContains(Node tempNode) {
-		for(Node currentNode : closed){
-			if(currentNode.equals(tempNode)){
+		for(int[][] currentState : closed){
+			if(compareStateWithNode(currentState, tempNode)){
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	private boolean compareStateWithNode(int[][] currentState, Node tempNode) {
+		int[][] tempState = findSolution(tempNode, true);
+		for(int i = 0; i < 3; i++){
+			for(int j = 0; j < 3; j++){
+				if(currentState[i][j] != tempState[i][j]){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	private boolean comparePositions(Point point1, Point point2) {
@@ -234,5 +246,23 @@ public abstract class AbstractSolver {
 	
 	public int[][] getGoalState(){
 		return goalState;
+	}
+	
+	protected void review(long startTime, long endTime, boolean solved, Node solutionNode){
+		Runtime runtime = Runtime.getRuntime();
+	    // Run the garbage collector
+	    runtime.gc();
+	    // Calculate the used memory
+	    long memory = runtime.totalMemory() - runtime.freeMemory();
+		long totalTime = endTime - startTime;
+		System.out.println(nodesEvaluated + " nodes were evaluated");
+		if(solved){
+			System.out.println("There are " + solutionNode.getPathCost() + " Nodes in the solution");
+		}
+		else{
+			System.out.println("No Solution Was Found");
+		}
+		System.out.println("Time Taken: " + (totalTime/Math.pow(10,9)) + " Seconds");
+		System.out.println("Memory used: " + (memory/Math.pow(10,6)) + " MegaBytes");
 	}
 }

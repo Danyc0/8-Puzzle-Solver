@@ -46,7 +46,7 @@ public class Node{
 	}
 
 	int calculateSecondHeuristic(int[][] currentState) {
-		// TODO Manhattan Distance
+		//Manhattan Distance
 		int manhattanDistance = 0;
 		for(int i = 0; i < currentState.length; i++){
 			for(int j = 0; j < currentState[0].length; j++){
@@ -67,23 +67,6 @@ public class Node{
 			}
 		}
 		return null;
-	}
-
-	public boolean equals(Node otherNode){
-		int[][] thisSolution = solver.findSolution(this, true);
-		int[][] otherSolution = solver.findSolution(otherNode, true);
-		return compare(thisSolution, otherSolution);
-	}
-
-	private boolean compare(int[][] currentState, int[][] goalState) {
-		for(int i = 0; i < 3; i++){
-			for(int j = 0; j < 3; j++){
-				if(currentState[i][j] != goalState[i][j]){
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 
 	private Point findPosition() {
