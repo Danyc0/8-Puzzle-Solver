@@ -5,8 +5,8 @@ public class Main {
 	public static void main(String[] args){//String startPath, String goalPath, String mode) {
 		String mode = "dfs";
 		Importer importer = new Importer();
-		int[][] start = importer.importPuzzle("/home/daniel/Documents/CS261/datafiles/testStart2.txt");//startPath);
-		int[][] goal = importer.importPuzzle("/home/daniel/Documents/CS261/datafiles/testGoal2.txt");//goalPath);
+		int[][] start = importer.importPuzzle("/home/daniel/Documents/CS261/datafiles/testStart1.txt");//startPath);
+		int[][] goal = importer.importPuzzle("/home/daniel/Documents/CS261/datafiles/testStart2.txt");//goalPath);
 		AbstractSolver solver = null;
 		switch(mode){
 		case "bfs" : solver = new BfsSolver(start, goal);

@@ -12,6 +12,7 @@ public abstract class AbstractSolver {
 	ArrayList<int[][]> closed;
 	int nodesEvaluated = 0;
 	int nodesInSolution = 0;
+	private int fails = 1;
 	
 	public AbstractSolver(int[][] start, int[][] goal) {
 		this.startState = start;
@@ -225,7 +226,6 @@ public abstract class AbstractSolver {
 		}
 	}
 
-	private int fails = 1;
 	private boolean compare(int[][] currentState, int[][] goalState, boolean dontOutput) {
 		if(!dontOutput){
 			outputState(currentState);
@@ -257,7 +257,19 @@ public abstract class AbstractSolver {
 		long totalTime = endTime - startTime;
 		System.out.println(nodesEvaluated + " nodes were evaluated");
 		if(solved){
-			System.out.println("There are " + solutionNode.getPathCost() + " Nodes in the solution");
+			System.out.println("There are " + solutionNode.getPathCost() + " Nodes in the solution: ");
+			Stack<Node> stack = new Stack<Node>();
+			Node currentNode = solutionNode;
+			stack.push(currentNode);
+			while(currentNode.getParent() != null){
+				currentNode = currentNode.getParent();
+				stack.push(currentNode);
+			}
+			while(!stack.isEmpty()){
+				Node tempNode = stack.pop();
+				Direction direction = tempNode.getDirection();
+				System.out.println(direction);
+			}
 		}
 		else{
 			System.out.println("No Solution Was Found");

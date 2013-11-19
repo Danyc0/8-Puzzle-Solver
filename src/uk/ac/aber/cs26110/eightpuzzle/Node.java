@@ -82,7 +82,6 @@ public class Node{
 		break;
 		default : {
 			newPosition = null;
-			System.out.println("error in Node.findPosition");
 		}
 		break;
 		}
