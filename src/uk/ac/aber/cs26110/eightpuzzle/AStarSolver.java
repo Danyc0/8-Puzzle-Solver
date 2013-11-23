@@ -45,16 +45,12 @@ public class AStarSolver extends AbstractSolver {
 	}
 	
 	protected ArrayList<Node> addTo(ArrayList<Node> children, Direction[] directions, Node currentNode) {
-		//System.out.print("Added");
 		for(Direction currentDirection : directions){
 			if(currentDirection != null){
-				//System.out.print(" " + currentDirection);
-				//TODO OUTPUT findSolution(currentNode, true)
 				Node tempNode = new Node(currentDirection, currentNode, findSolution(currentNode, true), goalState, this);
 				children.add(tempNode);
 			}
 		}
-		//System.out.println(" To The Priority Queue");
 		return children;
 	}
 }

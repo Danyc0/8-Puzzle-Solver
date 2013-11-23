@@ -41,7 +41,7 @@ public abstract class AbstractSolver {
 	protected ArrayList<Node> getChildren(Node currentNode) {
 		Point currentPosition = currentNode.getPosition();
 		ArrayList<Node> children = null;
-		Point[] points = { //Make a constant?
+		Point[] points = {
 				new Point(0, 0),
 				new Point(0, 1),
 				new Point(0, 2),
@@ -135,7 +135,7 @@ public abstract class AbstractSolver {
 
 	protected int[][] findSolution(Node startNode, boolean dontOutput) {
 		int nodesInSolution;
-		////Populate instruction stack
+		//Populate instruction stack
 		Stack<Node> stack = new Stack<Node>();
 		Node currentNode = startNode;
 		stack.push(currentNode);
@@ -143,7 +143,7 @@ public abstract class AbstractSolver {
 			currentNode = currentNode.getParent();
 			stack.push(currentNode);
 		}
-		////Apply instructions
+		//Apply instructions
 		int[][] currentState = deepCopy(startState);
 		int currentX = (int) startingPosition.getX();
 		int currentY = (int) startingPosition.getY();

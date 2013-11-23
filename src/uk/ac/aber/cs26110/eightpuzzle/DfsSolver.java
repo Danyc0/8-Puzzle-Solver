@@ -36,17 +36,14 @@ public class DfsSolver extends AbstractSolver {
 	}
 	
 	protected ArrayList<Node> addTo(ArrayList<Node> children, Direction[] directions, Node currentNode) {
-		//System.out.print("Added");
 		for(Direction currentDirection : directions){
 			if(currentDirection != null){
-				//System.out.print(" " + currentDirection);
 				Node tempNode = new Node(currentDirection, currentNode, startState, this);
 				if(!closedContains(tempNode)){
 					children.add(tempNode);
 				}
 			}
 		}
-		//System.out.println(" To The Stack");
 		return children;
 	}
 }
